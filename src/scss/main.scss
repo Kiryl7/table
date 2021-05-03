@@ -1,0 +1,101 @@
+$var1: #eeeeee;
+$var2: #ffffff;
+$var3: #F7F7F7;
+$var4: #5ea1ee;
+$var5: #dddddd;
+$var6: #4CAF50;
+$var7: #fc8804;
+
+.d-table {
+	display: table;
+	border: 1px solid $var1;
+	table-layout: fixed;
+	width: 100%;
+	margin-bottom: 20px;
+	border-top: 5px solid $var2;
+	border-bottom: 3px solid $var2;
+	border-collapse: collapse;
+	outline: 3px solid rgb(40, 113, 122);
+	font-size: 15px;
+	background: $var2;
+}
+.d-tr:nth-child(odd) {
+	display: none;
+	background: $var2;
+}
+.d-tr:nth-child(even) {
+	display: none;
+	background: $var3;
+}
+.d-td {
+	display: table-cell;
+	text-align: center;
+	padding: 5px 10px;
+	border: 1px solid $var1;
+	vertical-align: middle;
+}
+.d-th {
+	display: table-cell;
+	font-weight: bold;
+	padding: 5px;
+	background: $var4;
+	border: 1px solid $var5;
+	input[type=radio]:checked + label {
+		color: greenyellow;
+	}
+}
+.paginator {
+	line-height: 150%;
+	&>span {
+		display: inline-block;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+	&_active {
+		color: red;
+	}
+}
+.flex {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.font {
+	font-weight: bold;
+}
+.button {
+	-webkit-transition-duration: 0.4s;
+	transition-duration: 0.4s;
+	background-color: white;
+	color: black;
+	border: 2px solid $var6;
+	padding: 10px 22px;
+	&:hover {
+		background-color: $var6;
+		color: white;
+	}
+	&1 {
+		-webkit-transition-duration: 0.4s;
+		transition-duration: 0.4s;
+		background-color: white;
+		color: black;
+		border: 2px solid $var7;
+		padding: 10px 22px;
+		&:hover {
+			background-color: $var7;
+			color: white;
+		}
+	}
+}
+.radio {
+	position: absolute;
+	z-index: -1;
+	opacity: 0;
+	margin: 10px 0 0 7px;
+	+ label {
+		position: relative;
+		padding: 0 0 0 35px;
+		cursor: pointer;
+	}
+}
