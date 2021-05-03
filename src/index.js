@@ -53,55 +53,70 @@ function renderTH() {
     for (data in uniqueField) { //заполнение шапки, создания чекбоксов для сортировки полей
         let th = document.createElement('div')
         th.classList.add('d-th')
-        // th.innerHTML = uniqueField[data] + ':'
+        th.innerHTML = uniqueField[data]
         th.id = uniqueField[data]
         table.appendChild(th)
-        let radioBtn = document.createElement('input')
-        let btnName = document.createElement('label')
-        btnName.setAttribute('for', 'radioBtn' + data)
-        btnName.innerHTML = uniqueField[data] + ':'
-        radioBtn.setAttribute('type', 'radio')
-        radioBtn.classList.add('radio')
-        radioBtn.id = 'radioBtn' + data
-        radioBtn.setAttribute('name', 'sort')
-        th.appendChild(radioBtn)
-        th.appendChild(btnName)
     }
 }
 
 function sortByField() { // сортировка по полям
-    for (let i = 0; i < AllRadioBtn.length; i++) {
-        if (AllRadioBtn[i].checked) {
-            let field = document.querySelectorAll('.d-th')
-            let fieldId = field[i].id
-            users.sort(byField(fieldId))
-            users.forEach((obj, i) => {
-                let tr = document.getElementById('tr' + i)
-                table.removeChild(tr)
-            })
-            renderTD()
-            displayTR()
-        }
+    let th = document.querySelectorAll('.d-th')
+    for (let i = 0; i < th.length; i++) {
+        th[i].style.color = 'black'
     }
+    document.getElementById(this.innerHTML).style.color = 'red'
+    users.sort(byField(this.innerHTML))
+    users.forEach((obj, i) => {
+        let tr = document.getElementById('tr' + i)
+        table.removeChild(tr)
+    })
+    renderTD()
+    displayTR()
 }
 
 function byField(field) {
     return (a, b) => a[field] > b[field] ? 1 : -1;
 }
 
-function renderTD() {
+function renderTD() { // создание и заполнение ячеек таблицы 
     let k = 0
-    users.forEach((obj, i) => { // создание и заполнение ячеек таблицы 
+    let th = document.querySelectorAll('.d-th')
+    users.forEach((obj, i) => {
+        let p = 0
         let tr = document.createElement('div');
         tr.classList.add('d-tr')
         tr.id = 'tr' + i
         for (data in obj) {
-            let td = document.createElement('div')
-            td.classList.add('d-td')
-            td.innerHTML = obj[data]
-            td.id = 'td' + k
-            k++
-            tr.appendChild(td)
+            let thId = th[p].id
+            if (thId == data) {
+                let td = document.createElement('div')
+                td.classList.add('d-td')
+                td.innerHTML = obj[data]
+                td.id = 'td' + k
+                k++
+                tr.appendChild(td)
+            }
+            else if (thId != data) {
+                for (p; p < th.length; p++) {
+                    thId = th[p].id
+                    if (thId == data) {
+                        let td = document.createElement('div')
+                        td.classList.add('d-td')
+                        td.innerHTML = obj[data]
+                        td.id = 'td' + k
+                        k++
+                        tr.appendChild(td)
+                        break
+                    }
+                    else {
+                        let td = document.createElement('div') 
+                        td.classList.add('d-td')
+                        td.innerHTML = ('')  
+                        tr.appendChild(td)
+                    }
+                }
+            }
+            p++
         }
         table.appendChild(tr);
     })
@@ -157,27 +172,17 @@ function pagination(event) { //листаем
 
 function more() { //добавление отображаемых строк на одной странице
     if (cnt >= users.length) return
-    const paginator = document.getElementById("pg1")
-    let newPage = ""
     cnt += 1
     cnt_page = Math.ceil(count / cnt)
-    for (let i = 0; i < cnt_page; i++) {
-        newPage += "<span data-page=" + i * cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span>"
-    }
-    paginator.innerHTML = newPage
+    renderPage()
     displayTR()
 }
 
 function less() { //уменьшение отображаемых строк на одной странице
     if (cnt <= 1) return
-    const paginator = document.getElementById("pg1")
-    let newPage = ""
     cnt -= 1
     cnt_page = Math.ceil(count / cnt)
-    for (let i = 0; i < cnt_page; i++) {
-        newPage += "<span data-page=" + i * cnt + "  id=\"page" + (i + 1) + "\">" + (i + 1) + "</span>"
-    }
-    paginator.innerHTML = newPage
+    renderPage()
     displayOffTR()
 }
 
@@ -185,9 +190,9 @@ renderTH() //шапка таблицы
 renderTD() //ячейки
 displayTR() //первоначальные строки
 renderPage() //страницы
-const AllRadioBtn = document.querySelectorAll('.radio')
-for (let i = 0; i < AllRadioBtn.length; i++) { //вешаем на все чекбоксы по обработчику
-    AllRadioBtn[i].onclick = sortByField
+const AllTh = document.querySelectorAll('.d-th')
+for (let i = 0; i < AllTh.length; i++) { //вешаем на все th по обработчику
+    AllTh[i].onclick = sortByField
 }
 
 let main_page = document.getElementById("page1");
