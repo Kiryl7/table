@@ -13,12 +13,12 @@
 }
 
 .d-tr:nth-child(odd) {
-    display: none;
+    display: table-row;
     background: #fff;
 }
 
 .d-tr:nth-child(even) {
-    display: none;
+    display: table-row;
     background: #F7F7F7;
 }
 
