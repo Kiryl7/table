@@ -62,6 +62,14 @@ class Table{
         let uniqueField = Object.keys(users.reduce(function(result, obj) {
             return Object.assign(result, obj);
           }, {}))
+          if(document.querySelector('.d-th')) {
+            let allTh = document.querySelectorAll('.d-th')
+            let thLenght = document.querySelectorAll('.d-th').length
+            for(let x = 0; x < thLenght; x++) {
+                let th = allTh[x]
+                this.table.removeChild(th)
+            }
+        }
         for (let data in uniqueField) {
             let th = document.createElement('div')
             th.classList.add('d-th')
@@ -69,14 +77,13 @@ class Table{
             th.id = uniqueField[data]
             this.table.appendChild(th)
         }
+        this.setListeners()
     }
 
     sortByField(field) { // сортировка по полям
-        let th = document.querySelectorAll('.d-th')
-        for (let i = 0; i < th.length; i++) {
-            th[i].style.color = 'black'
-        }
-        document.getElementById(field.target.innerHTML).style.color = 'red'
+        let sortField = document.querySelector('.field_active')
+        if(sortField) sortField.classList.toggle('field_active')
+        document.getElementById(field.target.innerHTML).classList.toggle('field_active')
         users.sort(byField(field.target.innerHTML))
         this.renderTD()
     }
@@ -84,26 +91,29 @@ class Table{
 
     renderTD() { // создание и заполнение ячеек таблицы
         this.tableDisplay()
-        let k = 0
-        let th = document.querySelectorAll('.d-th')
+        let uniqueField = Object.keys(users.reduce(function(result, obj) {
+            return Object.assign(result, obj);
+          }, {}))
+          let th = document.querySelectorAll('.d-th').length
+          if(uniqueField.length != th) this.renderTH()
         if(document.querySelector('.d-tr')) {
+            let allTr = document.querySelectorAll('.d-tr')
             let trLenght = document.querySelectorAll('.d-tr').length
             for(let x = 0; x < trLenght; x++) {
-                let tr = document.getElementById('tr' + x)
+                let tr = allTr[x]
                 this.table.removeChild(tr)
             }
         }
         this.tempUsers.forEach((obj, i) => {
-            let tr = document.createElement('div');
+            let tr = document.createElement('div')
             tr.classList.add('d-tr')
             tr.id = 'tr' + i
             let p = 0
-            for (let y = 0; y < th.length; y++) {
-                let thId = th[y].id
+            for (let y = 0; y < uniqueField.length; y++) {
+                let thId = uniqueField[y]
                 let obj_key = Object.keys(obj)
                 let td = document.createElement('div')
                 td.classList.add('d-td')
-                td.id = 'td' + k
                 if(thId == obj_key[p]) {
                     td.innerHTML = obj[thId]
                     tr.appendChild(td)
@@ -113,7 +123,6 @@ class Table{
                         td.innerHTML = ''
                         tr.appendChild(td)
                     }
-                k++
             }
             this.table.appendChild(tr)
         })

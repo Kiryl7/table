@@ -51,6 +51,14 @@
 .paginator_active {
     color: red;
 }
+.field_active {
+    display: table-cell;
+    font-weight: bold;
+    padding: 5px;
+    background: #5ea1ee;
+    border: 1px solid #dddddd;
+    color:aquamarine;
+}
 
 .flex {
     display: flex;
