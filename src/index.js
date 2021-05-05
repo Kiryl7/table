@@ -35,13 +35,14 @@ const byField = (field) => {
     return (a, b) => a[field] > b[field] ? 1 : -1;
 }
 
-class Table{
+class Table {
     constructor(table, count, cnt, cnt_page, tempUsers) {
         this.table = table;
         this.count = count;
         this.cnt = cnt;
         this.cnt_page = cnt_page;
         this.tempUsers = tempUsers;
+        this.uniqueField = uniqueField;
     }
 
     renderAll() {
@@ -56,33 +57,39 @@ class Table{
         for (let i = 0; i < AllTh.length; i++) { //вешаем на все th по обработчику
             AllTh[i].onclick = (field) => this.sortByField(field)
         }
+
+        const moreBtn = document.getElementById('more')
+        const lessBtn = document.getElementById('less')
+
+        moreBtn.addEventListener("click", () => this.more())
+        lessBtn.addEventListener("click", () => this.less())
+
+        const paginator = document.getElementById('pg1')
+
+        paginator.addEventListener("click", (event) => this.pagination(event), false)
     }
 
     renderTH() { //заполнение шапки
-        let uniqueField = Object.keys(users.reduce(function(result, obj) {
-            return Object.assign(result, obj);
-          }, {}))
-          if(document.querySelector('.d-th')) {
+        if (document.querySelector('.d-th')) {
             let allTh = document.querySelectorAll('.d-th')
             let thLenght = document.querySelectorAll('.d-th').length
-            for(let x = 0; x < thLenght; x++) {
+            for (let x = 0; x < thLenght; x++) {
                 let th = allTh[x]
                 this.table.removeChild(th)
             }
         }
-        for (let data in uniqueField) {
+        for (let data in this.uniqueField) {
             let th = document.createElement('div')
             th.classList.add('d-th')
-            th.innerHTML = uniqueField[data]
-            th.id = uniqueField[data]
+            th.innerHTML = this.uniqueField[data]
+            th.id = this.uniqueField[data]
             this.table.appendChild(th)
         }
-        this.setListeners()
     }
 
     sortByField(field) { // сортировка по полям
         let sortField = document.querySelector('.field_active')
-        if(sortField) sortField.classList.toggle('field_active')
+        if (sortField) sortField.classList.toggle('field_active')
         document.getElementById(field.target.innerHTML).classList.toggle('field_active')
         users.sort(byField(field.target.innerHTML))
         this.renderTD()
@@ -91,15 +98,12 @@ class Table{
 
     renderTD() { // создание и заполнение ячеек таблицы
         this.tableDisplay()
-        let uniqueField = Object.keys(users.reduce(function(result, obj) {
-            return Object.assign(result, obj);
-          }, {}))
-          let th = document.querySelectorAll('.d-th').length
-          if(uniqueField.length != th) this.renderTH()
-        if(document.querySelector('.d-tr')) {
+        let th = document.querySelectorAll('.d-th').length
+        if (this.uniqueField.length != th) this.renderTH()
+        if (document.querySelector('.d-tr')) {
             let allTr = document.querySelectorAll('.d-tr')
             let trLenght = document.querySelectorAll('.d-tr').length
-            for(let x = 0; x < trLenght; x++) {
+            for (let x = 0; x < trLenght; x++) {
                 let tr = allTr[x]
                 this.table.removeChild(tr)
             }
@@ -109,20 +113,20 @@ class Table{
             tr.classList.add('d-tr')
             tr.id = 'tr' + i
             let p = 0
-            for (let y = 0; y < uniqueField.length; y++) {
-                let thId = uniqueField[y]
+            for (let y = 0; y < this.uniqueField.length; y++) {
+                let thId = this.uniqueField[y]
                 let obj_key = Object.keys(obj)
                 let td = document.createElement('div')
                 td.classList.add('d-td')
-                if(thId == obj_key[p]) {
+                if (thId == obj_key[p]) {
                     td.innerHTML = obj[thId]
                     tr.appendChild(td)
                     p++
                 }
-                    else {
-                        td.innerHTML = ''
-                        tr.appendChild(td)
-                    }
+                else {
+                    td.innerHTML = ''
+                    tr.appendChild(td)
+                }
             }
             this.table.appendChild(tr)
         })
@@ -156,10 +160,10 @@ class Table{
     tableDisplay() { //копируем часть массива для рендера
         let activePage = 1
         let numActivePage = null
-        if(document.querySelector('.paginator_active')) activePage = document.querySelector('.paginator_active')
-        if(activePage == 1) numActivePage = 1
-            else numActivePage = activePage.textContent 
-        let startPos = (this.cnt * numActivePage) - this.cnt 
+        if (document.querySelector('.paginator_active')) activePage = document.querySelector('.paginator_active')
+        if (activePage == 1) numActivePage = 1
+        else numActivePage = activePage.textContent
+        let startPos = (this.cnt * numActivePage) - this.cnt
         this.tempUsers = users.slice(startPos, startPos + this.cnt)
         return tempUsers
     }
@@ -168,7 +172,6 @@ class Table{
         const e = event || window.event
         const target = e.target
         const id = target.id
-        //const div_dTR = document.querySelectorAll(".d-tr")
 
         if (target.tagName.toLowerCase() !== "span") return
 
@@ -176,7 +179,6 @@ class Table{
         main_page.classList.remove("paginator_active")
         main_page = document.getElementById(id)
         main_page.classList.add("paginator_active")
-
         this.renderTD()
     }
 }
@@ -186,6 +188,9 @@ let table = document.getElementById('table');
 let count = users.length; //всего записей
 let cnt = 2 //сколько отображаем сначала
 let cnt_page = Math.ceil(count / cnt); //кол-во страниц
+let uniqueField = Object.keys(users.reduce(function (result, obj) { //уникальные поля объекта
+    return Object.assign(result, obj);
+}, {}))
 
 const tableObj = new Table(table, count, 2, Math.ceil(count / cnt))
 
